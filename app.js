@@ -45,7 +45,7 @@ app.post("/", function (req, res) {
         url: "https://us4.api.mailchimp.com/3.0/lists/f740b7f7ae",
         method: "POST",
         headers: {
-            "Authorization": "griffin1 db85388dfc7cfbfd9e0cfa669e8729fc-us4"
+            //place for API key
         },
         body: jsonData
 
