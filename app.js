@@ -2,11 +2,15 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const request = require("request");
+const mongoose = require("mongoose");
+const User = require("./api/models/user");
 
 //creating new express app
 var app = express();
 
-//servers up static files
+mongoose.connect("mongodb+srv://Griff808:" + process.env.MONGO_ATLAS_PW + "@cluster0-1vlrr.mongodb.net/test?retryWrites=true&w=majority", { useNewUrlParser: true, useUnifiedTopology: true });
+
+//servers up static files VYPSVJAODcmS3tx8
 app.use(express.static("public"));
 
 //urlencoded set to true to use qs library 
@@ -20,48 +24,16 @@ app.get("/", function (req, res) {
 
 //post request for home route
 app.post("/", function (req, res) {
-    //getting data from html form
-    var firstName = req.body.fName;
-    var lastName = req.body.lName;
-    var email = req.body.email;
 
-    //data object for mailchimp API
-    var data = {
-        members: [{
-            email_address: email,
-            status: "subscribed",
-            merge_fields: {
-                FNAME: firstName,
-                LNAME: lastName,
-            }
-        }]
-    };
-
-    //turning data into a json object
-    var jsonData = JSON.stringify(data);
-
-    //object used in post request
-    var options = {
-        url: "https://us4.api.mailchimp.com/3.0/lists/f740b7f7ae",
-        method: "POST",
-        headers: {
-            //place for API key
-        },
-        body: jsonData
-
-
-    };
-
-    //request to mailchips servers
-    request(options, function (error, response, body) {
-        //error handleing
-        if (error || response.statusCode != 200) {
-            res.sendFile(__dirname + "/failure.html");
-        } else {
-            res.sendFile(__dirname + "/success.html");
-        }
+    const user = new User({
+        _id: new mongoose.Types.ObjectId(),
+        firstName: req.body.fName,
+        lastName: req.body.lName,
+        email: req.body.email
     });
-
+    user.save().then(() => console.log('hello')
+    );
+    res.sendFile(__dirname + "/success.html");
 });
 
 //post request to redirect to home
